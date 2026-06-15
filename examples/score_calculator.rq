@@ -1,0 +1,33 @@
+game "Score Calculator"
+
+var quiz_marks = 18
+var assignment_marks = 20
+var bonus_marks = 4
+var penalty_marks = 2
+var doubled_bonus = bonus_marks * 2
+var half_penalty = penalty_marks / 2
+var final_score = quiz_marks + assignment_marks + doubled_bonus - half_penalty
+var passing_score = 40
+
+scene start:
+show "This program demonstrates arithmetic calculations."
+show "Quiz marks:"
+show quiz_marks
+show "Assignment marks:"
+show assignment_marks
+show "Bonus multiplied by 2:"
+show doubled_bonus
+show "Penalty divided by 2:"
+show half_penalty
+show "Final score:"
+show final_score
+if final_score >= passing_score then goto pass
+goto fail
+
+scene pass:
+show "Result: Pass"
+end
+
+scene fail:
+show "Result: Fail"
+end

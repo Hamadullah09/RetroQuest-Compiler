@@ -1,0 +1,4 @@
+game "Undefined Scene"
+
+scene start:
+goto missing_room

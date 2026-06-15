@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RetroQuest Submission Handout</title>
+  <style>
+    :root {
+      --bg: #f7f1e8;
+      --paper: #fffdf8;
+      --ink: #1f1a17;
+      --muted: #6b625b;
+      --line: #d7c8b7;
+      --accent: #7b2d26;
+    }
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    .page {
+      max-width: 980px;
+      margin: 24px auto;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      padding: 32px;
+    }
+    h1, h2, h3 {
+      color: var(--accent);
+      margin-top: 0;
+    }
+    h1 {
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 8px;
+    }
+    h2 {
+      margin-top: 28px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 4px;
+    }
+    h3 {
+      margin-top: 20px;
+    }
+    p, li {
+      font-size: 16px;
+    }
+    code, pre {
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+    }
+    pre {
+      background: #faf6ef;
+      border: 1px solid var(--line);
+      padding: 14px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 20px;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 10px;
+      vertical-align: top;
+      text-align: left;
+    }
+    th {
+      background: #f3e7d6;
+    }
+    .note {
+      background: #fff6ea;
+      border-left: 4px solid var(--accent);
+      padding: 12px 14px;
+      margin: 14px 0;
+    }
+    .small {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .page-break {
+      page-break-before: always;
+      break-before: page;
+      height: 0;
+    }
+    ul {
+      margin-top: 8px;
+    }
+    @page {
+      size: A4;
+      margin: 16mm;
+    }
+    @media print {
+      body {
+        background: #fff;
+      }
+      .page {
+        max-width: none;
+        margin: 0;
+        border: 0;
+        box-shadow: none;
+        padding: 0;
+      }
+      .note {
+        break-inside: avoid;
+      }
+      table, pre {
+        break-inside: avoid;
+      }
+      h2, h3 {
+        break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>RetroQuest Submission Handout</h1>
+    <p><strong>Course:</strong> FAST-NUCES, CS4031 - Compiler Construction, Spring 2026</p>
+    <p><strong>Project Title:</strong> RetroQuest</p>
+    <p><strong>Theme:</strong> Choose Your Own Adventure DSL</p>
+    <p><strong>Team Members:</strong> Hamadullah Arain (23K-0723), Tashkeel Pasha (23K-2014), Yousaf Bhatti (23K-0809)</p>
+    <div class="note">
+      This file is now aligned to the exact semester requirements. The handwritten part covers only what the brief asks for:
+      lexical DFA / transition table, 2 parse trees, and 1 symbol table example. The rest is separated as digital documentation and viva support.
+    </div>
+
+    <h2>0. Requirement Mapping</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Requirement From Brief</th>
+          <th>What You Need To Prepare</th>
+          <th>What This HTML Provides</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Lexical Analysis</td>
+          <td>Hand-drawn DFA diagram or transition table</td>
+          <td>Section 1 gives lexer DFA / transition table only</td>
+        </tr>
+        <tr>
+          <td>Syntax Analysis</td>
+          <td>2 handwritten parse trees</td>
+          <td>Sections 2 and 3 give 2 parse trees</td>
+        </tr>
+        <tr>
+          <td>Semantic Analysis</td>
+          <td>Handwritten symbol table with scope view</td>
+          <td>Section 4 gives symbol table example</td>
+        </tr>
+        <tr>
+          <td>Digital Documentation</td>
+          <td>Report, manual, architecture, reflection</td>
+          <td>Sections 5 onward</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>1. Handwritten DFA / Transition Table</h2>
+    <p><strong>Important:</strong> This DFA is for <strong>lexical analysis only</strong>. It is not for the full compiler. It recognizes RetroQuest tokens for the lexer phase, exactly as required in the project brief.</p>
+    <p>Use this transition table in your notebook. Draw it as a hand-drawn state transition diagram or copy the transition table directly.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>State</th>
+          <th>Input Class</th>
+          <th>Next State</th>
+          <th>Meaning / Accepted Token</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>S0</td>
+          <td>letter / underscore</td>
+          <td>S1</td>
+          <td>Start identifier / keyword</td>
+        </tr>
+        <tr>
+          <td>S1</td>
+          <td>letter / digit / underscore</td>
+          <td>S1</td>
+          <td>Continue identifier</td>
+        </tr>
+        <tr>
+          <td>S1</td>
+          <td>delimiter / whitespace</td>
+          <td>Accept</td>
+          <td>IDENTIFIER or KEYWORD</td>
+        </tr>
+        <tr>
+          <td>S0</td>
+          <td>whitespace</td>
+          <td>S0</td>
+          <td>Ignore spaces, tabs, newlines</td>
+        </tr>
+        <tr>
+          <td>S0</td>
+          <td>digit</td>
+          <td>S2</td>
+          <td>Start number literal</td>
+        </tr>
+        <tr>
+          <td>S2</td>
+          <td>digit</td>
+          <td>S2</td>
+          <td>Continue number</td>
+        </tr>
+        <tr>
+          <td>S2</td>
+          <td>delimiter / whitespace</td>
+          <td>Accept</td>
+          <td>NUMBER</td>
+        </tr>
+        <tr>
+          <td>S2</td>
+          <td>letter / underscore</td>
+          <td>Error</td>
+          <td>Reject invalid numeric identifier mix</td>
+        </tr>
+        <tr>
+          <td>S0</td>
+          <td>"</td>
+          <td>S3</td>
+          <td>Start string literal</td>
+        </tr>
+        <tr>
+          <td>S3</td>
+          <td>any valid character except "</td>
+          <td>S3</td>
+          <td>Continue string</td>
+        </tr>
+        <tr>
+          <td>S3</td>
+          <td>\</td>
+          <td>S8</td>
+          <td>Escape sequence begins</td>
+        </tr>
+        <tr>
+          <td>S8</td>
+          <td>n / t / " / \</td>
+          <td>S3</td>
+          <td>Valid escaped character</td>
+        </tr>
+        <tr>
+          <td>S8</td>
+          <td>other</td>
+          <td>S3</td>
+          <td>Treated as escaped literal in current implementation</td>
+        </tr>
+        <tr>
+          <td>S3</td>
+          <td>"</td>
+          <td>Accept</td>
+          <td>STRING</td>
+        </tr>
+        <tr>
+          <td>S3</td>
+          <td>newline / EOF</td>
+          <td>Error</td>
+          <td>Unterminated string</td>
+        </tr>
+        <tr>
+          <td>S0</td>
+          <td>=</td>
+          <td>S4</td>
+          <td>Assignment / equality candidate</td>
+        </tr>
+        <tr>
+          <td>S4</td>
+          <td>=</td>
+          <td>Accept</td>
+          <td>EQ token (==)</td>
+        </tr>
+        <tr>
+          <td>S4</td>
+          <td>other</td>
+          <td>Accept</td>
+          <td>ASSIGN token (=)</td>
+        </tr>
+        <tr>
+          <td>S0</td>
+          <td>!</td>
+          <td>S5</td>
+          <td>Not-equal candidate</td>
+        </tr>
+        <tr>
+          <td>S5</td>
+          <td>=</td>
+          <td>Accept</td>
+          <td>NEQ token (!=)</td>
+        </tr>
+        <tr>
+          <td>S5</td>
+          <td>other</td>
+          <td>Error</td>
+          <td>Standalone ! not allowed</td>
+        </tr>
+        <tr>
+          <td>S0</td>
+          <td>-</td>
+          <td>S6</td>
+          <td>Arrow candidate</td>
+        </tr>
+        <tr>
+          <td>S6</td>
+          <td>&gt;</td>
+          <td>Accept</td>
+          <td>ARROW token (-&gt;)</td>
+        </tr>
+        <tr>
+          <td>S6</td>
+          <td>other</td>
+          <td>Error</td>
+          <td>Standalone - not valid in current language</td>
+        </tr>
+        <tr>
+          <td>S0</td>
+          <td>+</td>
+          <td>Accept</td>
+          <td>PLUS token</td>
+        </tr>
+        <tr>
+          <td>S0</td>
+          <td>:</td>
+          <td>Accept</td>
+          <td>COLON token</td>
+        </tr>
+        <tr>
+          <td>S0</td>
+          <td>end of file</td>
+          <td>Accept</td>
+          <td>EOF token</td>
+        </tr>
+        <tr>
+          <td>S0</td>
+          <td>#</td>
+          <td>S7</td>
+          <td>Start comment</td>
+        </tr>
+        <tr>
+          <td>S7</td>
+          <td>any character except newline</td>
+          <td>S7</td>
+          <td>Ignore comment characters</td>
+        </tr>
+        <tr>
+          <td>S7</td>
+          <td>newline</td>
+          <td>S0</td>
+          <td>Comment ends</td>
+        </tr>
+        <tr>
+          <td>S0</td>
+          <td>any unsupported symbol</td>
+          <td>Error</td>
+          <td>Lexical error</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="small">Handwritten tip: draw states S0 to S8. This is enough for the lexer deliverable because the brief asks for token recognition DFA/NFA, not a DFA for parsing or semantic analysis.</p>
+
+    <h3>Accepting States Summary</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Accepted Token</th>
+          <th>Recognized From</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>IDENTIFIER / KEYWORD</td>
+          <td>S1 on delimiter</td>
+          <td>Keyword check is performed after lexeme collection</td>
+        </tr>
+        <tr>
+          <td>NUMBER</td>
+          <td>S2 on delimiter</td>
+          <td>Only integer literals supported</td>
+        </tr>
+        <tr>
+          <td>STRING</td>
+          <td>S3 on closing quote</td>
+          <td>Escape sequences route through S8</td>
+        </tr>
+        <tr>
+          <td>ASSIGN</td>
+          <td>S4 on non-= lookahead</td>
+          <td>Single =</td>
+        </tr>
+        <tr>
+          <td>EQ</td>
+          <td>S4 followed by =</td>
+          <td>Double equals</td>
+        </tr>
+        <tr>
+          <td>NEQ</td>
+          <td>S5 followed by =</td>
+          <td>Not-equal operator</td>
+        </tr>
+        <tr>
+          <td>ARROW</td>
+          <td>S6 followed by &gt;</td>
+          <td>Choice branch operator</td>
+        </tr>
+        <tr>
+          <td>PLUS</td>
+          <td>S0</td>
+          <td>Addition operator</td>
+        </tr>
+        <tr>
+          <td>COLON</td>
+          <td>S0</td>
+          <td>Scene label separator</td>
+        </tr>
+        <tr>
+          <td>EOF</td>
+          <td>S0 at end of stream</td>
+          <td>End marker token</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>How To Draw The Lexer DFA By Hand</h3>
+    <ol>
+      <li>Draw <code>S0</code> as the lexer start state.</li>
+      <li>From <code>S0</code>, draw outgoing arrows for identifier, number, string, operator, comment, and whitespace classes.</li>
+      <li>Use <code>S1</code> for identifier/keyword recognition.</li>
+      <li>Use <code>S2</code> for integer literal recognition.</li>
+      <li>Use <code>S3</code> and <code>S8</code> for string literal and escape handling.</li>
+      <li>Use <code>S4</code>, <code>S5</code>, and <code>S6</code> for multi-character operators.</li>
+      <li>Use <code>S7</code> for comment skipping.</li>
+      <li>Show clear accepting outputs: IDENTIFIER/KEYWORD, NUMBER, STRING, ASSIGN, EQ, NEQ, ARROW, PLUS, COLON, EOF.</li>
+    </ol>
+
+    <h3>Lexical Token Classes To Mention In Report</h3>
+    <ul>
+      <li>Keywords: <code>game</code>, <code>var</code>, <code>scene</code>, <code>show</code>, <code>choice</code>, <code>goto</code>, <code>set</code>, <code>if</code>, <code>then</code>, <code>end</code>, <code>restart</code>, <code>true</code>, <code>false</code></li>
+      <li>Identifiers</li>
+      <li>Number literals</li>
+      <li>String literals</li>
+      <li>Operators and punctuation: <code>=</code>, <code>==</code>, <code>!=</code>, <code>-&gt;</code>, <code>+</code>, <code>:</code></li>
+      <li>Comments</li>
+      <li>Whitespace</li>
+    </ul>
+
+    <h3>Lexical Grammar / Regex Summary</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Token Class</th>
+          <th>Regex / Pattern</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Identifier</td>
+          <td><code>[A-Za-z_][A-Za-z0-9_]*</code></td>
+          <td>May later be classified as keyword</td>
+        </tr>
+        <tr>
+          <td>Keyword</td>
+          <td><code>game|var|scene|show|choice|goto|set|if|then|end|restart|true|false</code></td>
+          <td>Matched after identifier scan</td>
+        </tr>
+        <tr>
+          <td>Number</td>
+          <td><code>[0-9]+</code></td>
+          <td>Current language supports integers only</td>
+        </tr>
+        <tr>
+          <td>String</td>
+          <td><code>"([^"\\]|\\.)*"</code></td>
+          <td>Supports escaped characters</td>
+        </tr>
+        <tr>
+          <td>Assign</td>
+          <td><code>=</code></td>
+          <td>Single equals</td>
+        </tr>
+        <tr>
+          <td>Equality</td>
+          <td><code>==</code></td>
+          <td>Comparison operator</td>
+        </tr>
+        <tr>
+          <td>Not Equal</td>
+          <td><code>!=</code></td>
+          <td>Comparison operator</td>
+        </tr>
+        <tr>
+          <td>Arrow</td>
+          <td><code>-&gt;</code></td>
+          <td>Choice transition operator</td>
+        </tr>
+        <tr>
+          <td>Plus</td>
+          <td><code>\+</code></td>
+          <td>Addition operator</td>
+        </tr>
+        <tr>
+          <td>Colon</td>
+          <td><code>:</code></td>
+          <td>Used after scene name</td>
+        </tr>
+        <tr>
+          <td>Comment</td>
+          <td><code>\#.*</code></td>
+          <td>Ignored by lexer</td>
+        </tr>
+        <tr>
+          <td>Whitespace</td>
+          <td><code>[ \t\r\n]+</code></td>
+          <td>Skipped by lexer</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Optional Separate Mini-DFAs</h3>
+    <p>If the teacher asks for separate smaller lexical DFAs instead of one combined lexer DFA, use these forms.</p>
+    <pre>Identifier / Keyword DFA
+q0 --letter/_--> q1
+q1 --letter/digit/_--> q1
+q1 --delimiter--> accept
+
+Number DFA
+q0 --digit--> q1
+q1 --digit--> q1
+q1 --delimiter--> accept
+
+String DFA
+q0 --"--> q1
+q1 --normal char--> q1
+q1 --\--> q2
+q2 --escaped char--> q1
+q1 --"--> accept</pre>
+
+    <h2>2. Parse Tree 1</h2>
+    <p>This satisfies the requirement of handwritten parse trees for syntax analysis. Use this as the first handwritten parse tree.</p>
+    <pre>Program
+├── GameDecl
+│   ├── "game"
+│   └── STRING("Hello Demo")
+└── SceneDecl
+    ├── "scene"
+    ├── IDENTIFIER(start)
+    ├── ":"
+    └── Statements
+        ├── ShowStmt
+        │   ├── "show"
+        │   └── STRING("hello world")
+        └── EndStmt
+            └── "end"</pre>
+
+    <h3>Bracketed Form</h3>
+    <pre>[Program
+  [GameDecl "game" STRING("Hello Demo")]
+  [SceneDecl
+    "scene"
+    IDENTIFIER(start)
+    ":"
+    [Statements
+      [ShowStmt "show" STRING("hello world")]
+      [EndStmt "end"]]]</pre>
+
+    <h2>3. Parse Tree 2</h2>
+    <p>Use this as the second handwritten parse tree. It is better because it shows variable declaration, choices, set statement, conditional branch, goto, and end.</p>
+    <pre>Program
+├── GameDecl
+│   ├── "game"
+│   └── STRING("Dungeon Escape")
+├── VarDecl
+│   ├── "var"
+│   ├── IDENTIFIER(has_key)
+│   ├── "="
+│   └── BOOLEAN(false)
+├── SceneDecl(start)
+│   ├── ShowStmt("You wake up in an old dungeon.")
+│   ├── ChoiceStmt("Open the chest" -> chest)
+│   └── ChoiceStmt("Try the iron door" -> door)
+├── SceneDecl(chest)
+│   ├── ShowStmt("Inside the chest you find a rusty key.")
+│   ├── SetStmt
+│   │   ├── IDENTIFIER(has_key)
+│   │   ├── "="
+│   │   └── BOOLEAN(true)
+│   └── GotoStmt(start)
+├── SceneDecl(door)
+│   ├── IfGotoStmt
+│   │   ├── "if"
+│   │   ├── Condition
+│   │   │   └── IDENTIFIER(has_key)
+│   │   ├── "then"
+│   │   ├── "goto"
+│   │   └── IDENTIFIER(freedom)
+│   ├── ShowStmt("The door is locked.")
+│   └── EndStmt
+└── SceneDecl(freedom)
+    ├── ShowStmt("You unlock the door and escape. You win!")
+    └── EndStmt</pre>
+
+    <h3>Parse Tree 2 Drawing Tip</h3>
+    <p>For the handwritten version, do not draw every terminal under every leaf if space is short. Draw the major hierarchy only:</p>
+    <pre>Program
+├── GameDecl
+├── VarDecl
+├── SceneDecl(start)
+│   ├── ShowStmt
+│   ├── ChoiceStmt
+│   └── ChoiceStmt
+├── SceneDecl(chest)
+│   ├── ShowStmt
+│   ├── SetStmt
+│   └── GotoStmt
+├── SceneDecl(door)
+│   ├── IfGotoStmt
+│   ├── ShowStmt
+│   └── EndStmt
+└── SceneDecl(freedom)
+    ├── ShowStmt
+    └── EndStmt</pre>
+
+    <h2>4. Handwritten Symbol Table Example</h2>
+    <p>This satisfies the semantic analysis handwritten requirement. Use this symbol table as your manual semantic analysis artifact for the <code>Dungeon Escape</code> example.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Type</th>
+          <th>Scope</th>
+          <th>Initial Value / Target</th>
+          <th>Remarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>has_key</td>
+          <td>Variable</td>
+          <td>Boolean</td>
+          <td>Global</td>
+          <td>false</td>
+          <td>Updated to true in scene chest</td>
+        </tr>
+        <tr>
+          <td>start</td>
+          <td>Scene</td>
+          <td>Label</td>
+          <td>Global</td>
+          <td>Entry scene</td>
+          <td>Required entry point</td>
+        </tr>
+        <tr>
+          <td>chest</td>
+          <td>Scene</td>
+          <td>Label</td>
+          <td>Global</td>
+          <td>Choice target</td>
+          <td>Contains key collection logic</td>
+        </tr>
+        <tr>
+          <td>door</td>
+          <td>Scene</td>
+          <td>Label</td>
+          <td>Global</td>
+          <td>Choice target</td>
+          <td>Contains conditional branch</td>
+        </tr>
+        <tr>
+          <td>freedom</td>
+          <td>Scene</td>
+          <td>Label</td>
+          <td>Global</td>
+          <td>Goto target</td>
+          <td>Winning ending</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note">
+      Scope visualization to draw by hand: draw one large box labeled <strong>Global Scope</strong>. Inside it, place one variable entry <code>has_key : boolean</code> and four scene label entries: <code>start</code>, <code>chest</code>, <code>door</code>, <code>freedom</code>. This is enough because the current language uses only global scope.
+    </div>
+
+    <div class="page-break"></div>
+
+    <h2>5. Optimization Example</h2>
+    <p>This is useful for the “before/after optimization” part of the brief.</p>
+    <h3>Source Program</h3>
+    <pre>game "Fixed Ending"
+
+var open_gate = true
+
+scene start:
+if open_gate then goto ending
+show "This line is unreachable."
+end
+
+scene ending:
+show "The gate is already open."
+end</pre>
+
+    <h3>IR Before Optimization</h3>
+    <pre>{
+  "start": [
+    { "type": "IfGotoStatement", "condition": { "variable": "open_gate" }, "target": "ending" },
+    { "type": "ShowStatement", "value": "This line is unreachable." },
+    { "type": "EndStatement" }
+  ],
+  "ending": [
+    { "type": "ShowStatement", "value": "The gate is already open." },
+    { "type": "EndStatement" }
+  ]
+}</pre>
+
+    <h3>IR After Optimization</h3>
+    <pre>{
+  "start": [
+    { "type": "GotoStatement", "target": "ending" }
+  ],
+  "ending": [
+    { "type": "ShowStatement", "value": "The gate is already open." },
+    { "type": "EndStatement" }
+  ]
+}</pre>
+
+    <h3>Optimization Notes</h3>
+    <ul>
+      <li><strong>Constant folding / propagation:</strong> <code>open_gate</code> is known to be <code>true</code>, so the condition is resolved at compile time.</li>
+      <li><strong>Unreachable code elimination:</strong> the <code>show</code> statement and following <code>end</code> after the unconditional branch are removed.</li>
+    </ul>
+
+    <h2>6. Final Report Formatting</h2>
+    <p>This section is for the digital documentation part of the brief.</p>
+    <ol>
+      <li>Title Page</li>
+      <li>Abstract</li>
+      <li>Introduction</li>
+      <li>Language Design and Motivation</li>
+      <li>Lexical Design</li>
+      <li>Syntax Design and Grammar</li>
+      <li>Semantic Rules and Symbol Table</li>
+      <li>Intermediate Representation</li>
+      <li>Optimization Techniques</li>
+      <li>Code Generation / Interpretation</li>
+      <li>Test Cases and Results</li>
+      <li>Challenges and Limitations</li>
+      <li>Conclusion</li>
+      <li>Team Reflection</li>
+      <li>Appendix</li>
+    </ol>
+
+    <h3>Suggested Title Page</h3>
+    <pre>FAST-NUCES, CS4031 - Compiler Construction
+Semester Project Report
+
+RetroQuest: A Retro-Inspired Mini Compiler for Interactive Fiction
+
+Submitted by:
+Hamadullah Arain - 23K-0723
+Tashkeel Pasha - 23K-2014
+Yousaf Bhatti - 23K-0809
+
+Spring 2026</pre>
+
+    <h3>Abstract Draft</h3>
+    <p>RetroQuest is a retro-inspired domain-specific language designed for text-based adventure games and branching interactive fiction. The project demonstrates all major compiler phases including lexical analysis, syntax analysis, semantic analysis, intermediate representation generation, optimization, and execution through a command-line interpreter. Source files written in the <code>.rq</code> language are translated into a structured JSON story graph, which is then executed by a lightweight runtime engine. The project emphasizes simple language design, clear compiler architecture, and creative application of compiler construction concepts in an interactive storytelling domain.</p>
+
+    <h2>7. Team Reflection Draft</h2>
+    <p>Use and edit this in your report. You can shorten or personalize it.</p>
+    <pre>During the development of RetroQuest, our team learned how the theoretical phases of compiler construction map to a practical software system. At the start, the biggest challenge was defining a grammar that remained simple enough for recursive descent parsing while still supporting useful features such as scenes, choices, conditions, and variable updates. We solved this by keeping the language intentionally focused and by designing a clean scene-based structure.
+
+Another challenge was semantic analysis. It was not enough to parse valid syntax; we also needed to detect undefined scenes, duplicate declarations, and invalid variable usage. This phase helped us understand the importance of symbol tables and validation beyond grammar rules.
+
+We also learned that intermediate representation design is a major compiler decision. Instead of generating machine code, we chose a JSON story graph because it matched our language domain and made execution easier through a command-line interpreter. This gave us a clear separation between compilation and runtime behavior.
+
+The optimization phase was also valuable. By implementing constant folding and unreachable code elimination, we observed how even simple optimizations can improve the generated representation and make compiler output cleaner.
+
+If we had more time, we would extend RetroQuest with richer arithmetic, nested conditions, inventory lists, and more advanced optimization passes. Overall, this project gave us hands-on understanding of how a compiler is designed, implemented, debugged, and demonstrated.
+
+Individual contributions:
+- Hamadullah Arain focused on lexer/parser design and grammar structuring.
+- Tashkeel Pasha worked on semantic analysis, symbol tables, and IR design.
+- Yousaf Bhatti handled interpreter logic, testing, and integration.</pre>
+
+    <h2>8. Viva / Demo Preparation</h2>
+    <h3>5 to 10 Minute Demo Flow</h3>
+    <ol>
+      <li>Introduce the problem: RetroQuest is a DSL for interactive stories.</li>
+      <li>Show a simple <code>.rq</code> source program.</li>
+      <li>Run debug mode to show tokens, AST, symbol table, and IR.</li>
+      <li>Explain the optimizer and show before/after IR on a constant case.</li>
+      <li>Run the story interactively in the terminal.</li>
+      <li>Run one invalid test to show semantic or lexical error handling.</li>
+    </ol>
+
+    <h3>Suggested Commands</h3>
+    <pre>python main.py examples/treasure_hunt.rq --debug
+python main.py examples/fixed_ending.rq --debug
+python main.py examples/treasure_hunt.rq --run
+python main.py tests/undefined_scene.rq
+python main.py tests/unterminated_string.rq</pre>
+
+    <h3>Expected Viva Questions with Answers</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Question</th>
+          <th>Short Answer</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Why is this a compiler project?</td>
+          <td>Because it implements lexical analysis, parsing, semantic checks, IR generation, optimization, and code execution for a custom language.</td>
+        </tr>
+        <tr>
+          <td>What is the target output?</td>
+          <td>A JSON story graph executed through a command-line interpreter.</td>
+        </tr>
+        <tr>
+          <td>Why did you choose JSON IR instead of assembly?</td>
+          <td>Because the project theme is interactive fiction, and a structured story graph is the most natural target representation.</td>
+        </tr>
+        <tr>
+          <td>What semantic errors are detected?</td>
+          <td>Undefined scene labels, duplicate variable declarations, missing start scene, and invalid variable references.</td>
+        </tr>
+        <tr>
+          <td>What optimizations did you implement?</td>
+          <td>Constant folding / propagation and unreachable code or scene elimination.</td>
+        </tr>
+        <tr>
+          <td>What is the role of the interpreter?</td>
+          <td>It executes the compiled IR and lets the user play the story through the terminal.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>9. Three Ready Example Programs</h2>
+    <h3>Example 1: Hello Demo</h3>
+    <pre>game "Hello Demo"
+scene start:
+show "hello world"
+end</pre>
+
+    <h3>Example 2: Addition Demo</h3>
+    <pre>game "Addition Demo"
+var a = 5
+var b = 7
+var sum = a + b
+
+scene start:
+show "First number is"
+show a
+show "Second number is"
+show b
+show "Sum is"
+show sum
+end</pre>
+
+    <h3>Example 3: Dungeon Escape</h3>
+    <pre>game "Dungeon Escape"
+var has_key = false
+
+scene start:
+show "You wake up in an old dungeon."
+choice "Open the chest" -> chest
+choice "Try the iron door" -> door
+
+scene chest:
+show "Inside the chest you find a rusty key."
+set has_key = true
+goto start
+
+scene door:
+if has_key then goto freedom
+show "The door is locked."
+end
+
+scene freedom:
+show "You unlock the door and escape. You win!"
+end</pre>
+
+    <h2>10. Expected Output Notes</h2>
+    <ul>
+      <li>Hello Demo prints <code>hello world</code> and ends.</li>
+      <li>Addition Demo prints 5, 7, and 12 in order.</li>
+      <li>Dungeon Escape allows the player to collect the key and then reach the winning scene.</li>
+    </ul>
+
+    <div class="note">
+      Best use of this file: open it in browser, then copy only Sections 1 to 4 by hand for the handwritten deliverables. Sections 5 to 10 are for your digital report, optimization explanation, reflection, and viva preparation.
+    </div>
+  </div>
+</body>
+</html>

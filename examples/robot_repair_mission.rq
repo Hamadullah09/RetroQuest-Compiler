@@ -1,0 +1,90 @@
+game "Robot Repair Mission"
+
+var has_battery = false
+var has_toolkit = false
+var robot_powered = false
+var panel_fixed = false
+var repairs_done = 0
+
+scene start:
+show "A small delivery robot has stopped in the workshop. You need to repair it before sunset."
+choice "Search the storage room" -> storage
+choice "Check the workbench" -> workbench
+choice "Inspect the robot" -> robot
+
+scene storage:
+show "The storage room has boxes, wires, and a spare battery on the shelf."
+if has_battery then goto storage_empty
+set has_battery = true
+show "You take the spare battery."
+goto start
+
+scene storage_empty:
+show "You already took the useful battery from this room."
+goto start
+
+scene workbench:
+show "The workbench has screwdrivers, tape, and a small toolkit."
+if has_toolkit then goto workbench_empty
+set has_toolkit = true
+show "You pick up the toolkit."
+goto start
+
+scene workbench_empty:
+show "You already have the toolkit."
+goto start
+
+scene robot:
+show "The robot screen is dark. Its side panel is loose and the battery slot is empty."
+choice "Install the battery" -> install_battery
+choice "Tighten the side panel" -> tighten_panel
+choice "Run final test" -> final_test
+choice "Return to workshop" -> start
+
+scene install_battery:
+if has_battery then goto battery_ready
+show "You need to find a battery first."
+goto robot
+
+scene battery_ready:
+if robot_powered then goto already_powered
+set robot_powered = true
+set repairs_done = repairs_done + 1
+show "You install the battery. The robot lights turn on."
+goto robot
+
+scene already_powered:
+show "The battery is already installed and working."
+goto robot
+
+scene tighten_panel:
+if has_toolkit then goto panel_ready
+show "You need a toolkit to tighten the side panel."
+goto robot
+
+scene panel_ready:
+if panel_fixed then goto already_fixed
+set panel_fixed = true
+set repairs_done = repairs_done + 1
+show "You tighten the panel carefully. The robot body looks stable now."
+goto robot
+
+scene already_fixed:
+show "The side panel is already tight and secure."
+goto robot
+
+scene final_test:
+if robot_powered then goto test_panel
+show "The robot has no power, so the test cannot start."
+goto robot
+
+scene test_panel:
+if panel_fixed then goto success
+show "The robot turns on, but the side panel still needs repair."
+goto robot
+
+scene success:
+show "The robot moves forward, scans the room, and says: Mission complete."
+show "Total repair steps completed:"
+show repairs_done
+end

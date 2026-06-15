@@ -1,0 +1,8 @@
+game "Duplicate Variable"
+
+var score = 1
+var score = 2
+
+scene start:
+show "This should fail."
+end

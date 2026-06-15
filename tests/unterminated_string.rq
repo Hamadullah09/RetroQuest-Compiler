@@ -1,0 +1,5 @@
+game "Broken String"
+
+scene start:
+show "This string never closes
+end

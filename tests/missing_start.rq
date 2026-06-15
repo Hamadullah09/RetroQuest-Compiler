@@ -1,0 +1,5 @@
+game "Missing Start"
+
+scene intro:
+show "There is no start scene."
+end

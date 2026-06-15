@@ -1,0 +1,7 @@
+game "Broken Story"
+
+var has_key = false
+
+scene start:
+show "This story has an invalid jump."
+goto missing_scene

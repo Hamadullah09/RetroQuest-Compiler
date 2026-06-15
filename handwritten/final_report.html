@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RetroQuest Final Report</title>
+  <style>
+    :root {
+      --bg: #f6f3ee;
+      --paper: #ffffff;
+      --ink: #1f1f1f;
+      --muted: #6b6b6b;
+      --line: #d9d1c7;
+      --accent: #7b2d26;
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.6;
+    }
+    .report {
+      max-width: 960px;
+      margin: 24px auto;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+      padding: 40px;
+    }
+    h1, h2, h3 {
+      color: var(--accent);
+      margin-top: 0;
+    }
+    h1 {
+      text-align: center;
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 10px;
+    }
+    h2 {
+      margin-top: 28px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 4px;
+    }
+    p, li {
+      font-size: 16px;
+    }
+    pre, code {
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+    }
+    pre {
+      background: #faf7f2;
+      border: 1px solid var(--line);
+      padding: 14px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 20px;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 10px;
+      vertical-align: top;
+      text-align: left;
+    }
+    th {
+      background: #f3e7d6;
+    }
+    .center {
+      text-align: center;
+    }
+    .muted {
+      color: var(--muted);
+    }
+    .page-break {
+      page-break-before: always;
+      break-before: page;
+      height: 0;
+    }
+    @page {
+      size: A4;
+      margin: 16mm;
+    }
+    @media print {
+      body {
+        background: #fff;
+      }
+      .report {
+        max-width: none;
+        margin: 0;
+        border: 0;
+        box-shadow: none;
+        padding: 0;
+      }
+      table, pre {
+        break-inside: avoid;
+      }
+      h2, h3 {
+        break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="report">
+    <h1>RetroQuest: A Retro-Inspired Mini Compiler for Interactive Fiction</h1>
+    <p class="center"><strong>FAST-NUCES, CS4031 - Compiler Construction</strong></p>
+    <p class="center">Spring 2026</p>
+    <p class="center"><strong>Team Members</strong></p>
+    <p class="center">Hamadullah Arain - 23K-0723<br>Tashkeel Pasha - 23K-2014<br>Yousaf Bhatti - 23K-0809</p>
+
+    <h2>Abstract</h2>
+    <p>RetroQuest is a retro-inspired domain-specific language designed for text-based adventure games and branching interactive fiction. The project demonstrates all major compiler phases including lexical analysis, syntax analysis, semantic analysis, intermediate representation generation, optimization, and execution through a command-line interpreter. Source files written in the <code>.rq</code> language are translated into a structured JSON story graph, which is then executed by a lightweight runtime engine. The project emphasizes simple language design, clear compiler architecture, and creative application of compiler construction concepts in an interactive storytelling domain.</p>
+
+    <h2>1. Introduction</h2>
+    <p>Compiler Construction is often taught using arithmetic expressions or small toy languages. In this project, we chose a more creative direction by designing a mini language for retro-style interactive fiction. RetroQuest allows users to define scenes, choices, variable updates, and conditional branches in a compact syntax. The main purpose of the project is to map all compiler phases to a working implementation that is easy to understand, demonstrate, and extend.</p>
+
+    <h2>2. Language Design and Motivation</h2>
+    <p>The project theme is “Choose Your Own Adventure DSL.” We selected this theme because it naturally supports branching control flow, labels, semantic validation, and custom execution logic. The language is designed to be beginner-friendly and intentionally small so that compiler phases remain clear.</p>
+    <ul>
+      <li>File extension: <code>.rq</code></li>
+      <li>Target output: JSON story graph</li>
+      <li>Execution model: command-line interpreter</li>
+    </ul>
+
+    <h2>3. Lexical Design</h2>
+    <p>The lexer scans the source program and recognizes keywords, identifiers, literals, operators, punctuation, comments, and whitespace. Each token is emitted with line and column information for accurate error reporting.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Token Class</th>
+          <th>Examples</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Keywords</td>
+          <td><code>game</code>, <code>var</code>, <code>scene</code>, <code>show</code>, <code>choice</code>, <code>goto</code>, <code>set</code>, <code>if</code>, <code>then</code>, <code>end</code>, <code>restart</code></td>
+        </tr>
+        <tr>
+          <td>Identifiers</td>
+          <td><code>start</code>, <code>has_key</code>, <code>freedom</code></td>
+        </tr>
+        <tr>
+          <td>Literals</td>
+          <td>strings, integers, booleans</td>
+        </tr>
+        <tr>
+          <td>Operators / Symbols</td>
+          <td><code>=</code>, <code>==</code>, <code>!=</code>, <code>-&gt;</code>, <code>+</code>, <code>:</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>4. Syntax Design and Grammar</h2>
+    <p>RetroQuest follows a scene-oriented grammar. A program may optionally begin with a game title, followed by global variable declarations and one or more scene declarations.</p>
+    <pre>&lt;program&gt;         ::= [&lt;game_decl&gt;] {&lt;var_decl&gt;} {&lt;scene_decl&gt;}
+&lt;game_decl&gt;       ::= "game" &lt;string&gt;
+&lt;var_decl&gt;        ::= "var" &lt;identifier&gt; "=" &lt;expr&gt;
+&lt;scene_decl&gt;      ::= "scene" &lt;identifier&gt; ":" {&lt;statement&gt;}
+
+&lt;statement&gt;       ::= &lt;show_stmt&gt;
+                    | &lt;choice_stmt&gt;
+                    | &lt;goto_stmt&gt;
+                    | &lt;set_stmt&gt;
+                    | &lt;if_goto_stmt&gt;
+                    | &lt;end_stmt&gt;
+                    | &lt;restart_stmt&gt;
+
+&lt;expr&gt;            ::= &lt;primary_expr&gt; { "+" &lt;primary_expr&gt; }</pre>
+
+    <h2>5. Semantic Rules and Symbol Table</h2>
+    <ul>
+      <li>All variables must be declared before use.</li>
+      <li>All target scenes must exist.</li>
+      <li>Duplicate variable names are rejected.</li>
+      <li>Duplicate scene labels are rejected.</li>
+      <li>The language requires a <code>start</code> scene as the entry point.</li>
+      <li>Addition is allowed only for integer operands.</li>
+    </ul>
+
+    <h2>6. Intermediate Representation</h2>
+    <p>The compiler generates a JSON-based story graph. Each scene becomes a node and transitions are represented by choices or goto edges. This IR was selected because it closely matches the semantics of interactive fiction and keeps the runtime simple.</p>
+    <pre>{
+  "title": "Treasure Hunt",
+  "variables": {
+    "has_key": false
+  },
+  "scenes": {
+    "start": [
+      { "type": "ShowStatement", "value": "You wake up in a dark room." },
+      { "type": "ChoiceStatement", "text": "Open the wooden chest", "target": "chest" }
+    ]
+  },
+  "entry_scene": "start"
+}</pre>
+
+    <h2>7. Optimization Techniques</h2>
+    <p>The project implements two basic optimizations:</p>
+    <ul>
+      <li>Constant folding / propagation</li>
+      <li>Unreachable code and unreachable scene elimination</li>
+    </ul>
+    <h3>Before Optimization</h3>
+    <pre>if open_gate then goto ending
+show "This line is unreachable."
+end</pre>
+    <h3>After Optimization</h3>
+    <pre>goto ending</pre>
+
+    <h2>8. Code Generation and Interpretation</h2>
+    <p>Instead of generating machine code, RetroQuest compiles source programs into an optimized story graph and executes them through a custom command-line interpreter. This approach is valid for the project brief because the target output may be interpreted rather than native machine code.</p>
+
+    <div class="page-break"></div>
+
+    <h2>9. Test Cases and Results</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Test Case</th>
+          <th>Purpose</th>
+          <th>Expected Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>examples/treasure_hunt.rq</code></td>
+          <td>Valid branching story</td>
+          <td>Interactive execution with winning path</td>
+        </tr>
+        <tr>
+          <td><code>examples/fixed_ending.rq</code></td>
+          <td>Optimization demonstration</td>
+          <td>Condition folded, unreachable code removed</td>
+        </tr>
+        <tr>
+          <td><code>tests/undefined_scene.rq</code></td>
+          <td>Semantic error</td>
+          <td>Undefined scene error</td>
+        </tr>
+        <tr>
+          <td><code>tests/duplicate_variable.rq</code></td>
+          <td>Semantic error</td>
+          <td>Duplicate variable declaration error</td>
+        </tr>
+        <tr>
+          <td><code>tests/unterminated_string.rq</code></td>
+          <td>Lexical error</td>
+          <td>Unterminated string error with line/column</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>10. Challenges and Limitations</h2>
+    <p>One challenge was keeping the grammar simple while still supporting useful story mechanics. Another challenge was avoiding unsafe optimization of mutable variables. The current version supports global scope only and limited arithmetic, so it is intentionally focused rather than general-purpose.</p>
+
+    <h2>11. Conclusion</h2>
+    <p>RetroQuest successfully demonstrates how a custom language can be designed and compiled through all major phases of compiler construction. The project combines creativity with practical compiler design and provides a working implementation that is easy to demonstrate in a viva setting.</p>
+
+    <h2>12. Team Reflection</h2>
+    <p>During the development of RetroQuest, our team learned how the theoretical phases of compiler construction map to a practical software system. At the start, the biggest challenge was defining a grammar that remained simple enough for recursive descent parsing while still supporting useful features such as scenes, choices, conditions, and variable updates. We solved this by keeping the language intentionally focused and by designing a clean scene-based structure.</p>
+    <p>Another challenge was semantic analysis. It was not enough to parse valid syntax; we also needed to detect undefined scenes, duplicate declarations, and invalid variable usage. This phase helped us understand the importance of symbol tables and validation beyond grammar rules.</p>
+    <p>We also learned that intermediate representation design is a major compiler decision. Instead of generating machine code, we chose a JSON story graph because it matched our language domain and made execution easier through a command-line interpreter. This gave us a clear separation between compilation and runtime behavior.</p>
+    <p>If we had more time, we would extend RetroQuest with richer arithmetic, nested conditions, inventory lists, and more advanced optimization passes.</p>
+
+    <h2>13. Appendix</h2>
+    <p class="muted">Attach scanned handwritten DFA, parse trees, and symbol table here in the final submitted PDF or ZIP package.</p>
+  </div>
+</body>
+</html>

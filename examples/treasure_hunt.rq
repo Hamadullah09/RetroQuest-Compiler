@@ -1,0 +1,22 @@
+game "Treasure Hunt"
+
+var has_key = false
+
+scene start:
+show "You wake up in a dark room."
+choice "Open the wooden chest" -> chest
+choice "Try the locked door" -> door
+
+scene chest:
+show "Inside the chest you find a rusty key."
+set has_key = true
+goto start
+
+scene door:
+if has_key then goto freedom
+show "The door is locked."
+end
+
+scene freedom:
+show "You unlock the door and escape. You win!"
+end

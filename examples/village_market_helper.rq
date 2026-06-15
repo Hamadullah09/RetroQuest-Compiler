@@ -1,0 +1,89 @@
+game "Village Market Helper"
+
+var has_list = false
+var bought_rice = false
+var bought_milk = false
+var helped_shopkeeper = false
+var coins = 20
+
+scene start:
+show "Your mother sends you to the village market. You must buy rice and milk before returning home."
+choice "Read the shopping list" -> list
+choice "Go to the rice shop" -> rice_shop
+choice "Go to the dairy shop" -> dairy_shop
+choice "Visit the old shopkeeper" -> shopkeeper
+choice "Return home" -> home_check
+
+scene list:
+if has_list then goto list_again
+set has_list = true
+show "The list says: buy rice and milk. Keep some coins safe."
+goto start
+
+scene list_again:
+show "You read the list again: rice and milk are the important items."
+goto start
+
+scene rice_shop:
+if has_list then goto buy_rice
+show "The rice seller asks what you need, but you forgot to read the list."
+goto start
+
+scene buy_rice:
+if bought_rice then goto rice_done
+set bought_rice = true
+set coins = coins + 5
+show "You buy rice. The seller gives you 5 coins back as discount."
+goto start
+
+scene rice_done:
+show "You already bought rice."
+goto start
+
+scene dairy_shop:
+if has_list then goto buy_milk
+show "The dairy seller asks you to check your list first."
+goto start
+
+scene buy_milk:
+if bought_milk then goto milk_done
+set bought_milk = true
+show "You buy fresh milk and place it carefully in your bag."
+goto start
+
+scene milk_done:
+show "You already bought milk."
+goto start
+
+scene shopkeeper:
+if helped_shopkeeper then goto shopkeeper_done
+set helped_shopkeeper = true
+set coins = coins + 10
+show "You help the old shopkeeper lift a box. He gives you 10 extra coins."
+goto start
+
+scene shopkeeper_done:
+show "The old shopkeeper smiles and says you have already helped enough."
+goto start
+
+scene home_check:
+if bought_rice then goto check_milk
+show "You cannot go home yet because rice is missing."
+goto start
+
+scene check_milk:
+if bought_milk then goto home
+show "You cannot go home yet because milk is missing."
+goto start
+
+scene home:
+show "You return home with all items from the list."
+if helped_shopkeeper then goto kind_ending
+show "Your mother is happy that you completed the shopping. Remaining coins:"
+show coins
+end
+
+scene kind_ending:
+show "Your mother is proud because you completed the shopping and helped someone. Remaining coins:"
+show coins
+end

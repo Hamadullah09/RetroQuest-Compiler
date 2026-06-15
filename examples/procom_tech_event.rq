@@ -1,0 +1,131 @@
+game "Procom Tech Event"
+
+var has_badge = false
+var visited_companies = false
+var joined_competition = false
+var networked = false
+var points = 0
+
+scene start:
+show "You arrive at FAST University for Procom, a tech event with company stalls, coding contests, and student competitions."
+choice "Go to the registration desk" -> registration
+choice "Visit the company stalls" -> company_stalls
+choice "Check the competition area" -> competition_area
+choice "Go to the networking lounge" -> networking_lounge
+choice "Attend the closing ceremony" -> closing_check
+
+scene registration:
+show "Volunteers at the registration desk are giving event badges to participants."
+if has_badge then goto registration_done
+set has_badge = true
+set points = points + 10
+show "You collect your Procom badge and gain 10 points."
+goto start
+
+scene registration_done:
+show "You already have your badge. The volunteer tells you to explore the event."
+goto start
+
+scene company_stalls:
+if has_badge then goto company_visit
+show "Security asks you to collect your event badge before entering the company stall area."
+goto start
+
+scene company_visit:
+if visited_companies then goto companies_done
+set visited_companies = true
+set points = points + 20
+show "You visit software houses, startups, and recruitment booths. You learn about internships and gain 20 points."
+choice "Ask a company representative about internships" -> internship_talk
+choice "Return to the main hall" -> start
+
+scene companies_done:
+show "You have already visited the main company stalls."
+choice "Talk again with a company representative" -> internship_talk
+choice "Return to the main hall" -> start
+
+scene internship_talk:
+if networked then goto already_networked
+set networked = true
+set points = points + 15
+show "You introduce yourself to a company representative and discuss internship opportunities. You gain 15 points."
+goto start
+
+scene already_networked:
+show "You already made a useful industry contact today."
+goto start
+
+scene competition_area:
+if has_badge then goto competition_choice
+show "The competition desk asks for your Procom badge before registration."
+goto start
+
+scene competition_choice:
+show "Different competitions are happening: speed programming, web development, gaming, and quiz contests."
+choice "Join the speed programming competition" -> speed_programming
+choice "Join the web development competition" -> web_competition
+choice "Return to the main hall" -> start
+
+scene speed_programming:
+if joined_competition then goto competition_done
+set joined_competition = true
+set points = points + 30
+show "You solve coding problems under time pressure and gain 30 points."
+goto start
+
+scene web_competition:
+if joined_competition then goto competition_done
+set joined_competition = true
+set points = points + 25
+show "You build a small web interface for the competition and gain 25 points."
+goto start
+
+scene competition_done:
+show "You already participated in one competition. The judges are checking submissions."
+goto start
+
+scene networking_lounge:
+if has_badge then goto lounge_entry
+show "The lounge entry requires a Procom badge."
+goto start
+
+scene lounge_entry:
+show "Students, organizers, alumni, and company guests are talking in the networking lounge."
+if networked then goto lounge_done
+set networked = true
+set points = points + 15
+show "You meet seniors and industry guests. You gain 15 points."
+goto start
+
+scene lounge_done:
+show "You already used the networking lounge well."
+goto start
+
+scene closing_check:
+if has_badge then goto check_company_visit
+show "You need your event badge before attending the closing ceremony."
+goto start
+
+scene check_company_visit:
+if visited_companies then goto check_competition
+show "Before closing, visit the company stalls to get the full Procom experience."
+goto start
+
+scene check_competition:
+if joined_competition then goto closing_ceremony
+show "Before closing, participate in at least one competition."
+goto start
+
+scene closing_ceremony:
+show "The Procom closing ceremony begins. Winners are announced and participants receive certificates."
+if networked then goto best_ending
+show "You completed the main event activities. Your final Procom score is:"
+show points
+end
+
+scene best_ending:
+set points = points + 20
+show "Because you also networked with companies and seniors, you receive a special participation bonus."
+show "Your final Procom score is:"
+show points
+end

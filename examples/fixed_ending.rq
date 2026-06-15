@@ -1,0 +1,12 @@
+game "Fixed Ending"
+
+var open_gate = true
+
+scene start:
+if open_gate then goto ending
+show "This line is unreachable."
+end
+
+scene ending:
+show "The gate is already open."
+end

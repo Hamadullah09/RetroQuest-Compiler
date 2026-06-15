@@ -1,0 +1,13 @@
+game "Addition Demo"
+var a = 5
+var b = 7
+var sum = a + b
+
+scene start:
+show "First number is"
+show a
+show "Second number is"
+show b
+show "Sum is"
+show sum
+end

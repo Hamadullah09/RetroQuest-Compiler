@@ -1,0 +1,12 @@
+game "Restart Demo"
+
+var finished = true
+
+scene start:
+if finished then goto done
+show "This line should not execute."
+restart
+
+scene done:
+show "The optimizer sent you directly here."
+end
