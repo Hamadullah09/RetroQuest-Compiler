@@ -79,7 +79,3 @@ All submission-oriented documentation is inside the [`handwritten`](./handwritte
 - `COMPILER_ARCHITECTURE.md`
 - `TEST_SUITE.md`
 
-## Team
-- Hamadullah Arain - 23K-0723
-- Tashkeel Pasha - 23K-2014
-- Yousaf Bhatti - 23K-0809
